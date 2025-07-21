@@ -281,7 +281,7 @@ button:hover {
 .gallery-item {
   flex: 1 1 100%;  /* full width by default */
   min-width: 280px;
-  max-width: 430px;
+  max-width: 360px !important;
   background: #fff;
 
   padding: 10px;
