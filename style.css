@@ -1,3 +1,6 @@
+/* Import NASA recommended fonts from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Public+Sans:wght@400;700&family=Source+Sans+Pro:wght@400;700&display=swap');
+
 /* Global reset & box sizing */
 * {
   box-sizing: border-box;
@@ -7,7 +10,7 @@
 
 /* Base page styles */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Inter', 'Public Sans', 'Source Sans Pro', Helvetica, Arial, sans-serif;
   background-color: #f1f1f1;
   padding: 20px;
 }
@@ -29,9 +32,10 @@ body {
 }
 
 h1 {
-  font-family: Verdana, sans-serif;
+  font-family: 'Public Sans', 'Inter', 'Source Sans Pro', Helvetica, Arial, sans-serif;
   font-weight: bold;
-  color: #212121;
+  color: #0b3d91; /* NASA blue */
+  letter-spacing: 2px;
 }
 
 /* Logo */
@@ -47,31 +51,39 @@ h1 {
   gap: 10px;
   justify-content: center;
   margin-bottom: 20px;
-  padding: 0 20px;
 }
 
 /* Inputs and buttons */
 input[type="date"],
 button {
-  font-family: Arial, sans-serif;
+  font-family: 'Inter', 'Public Sans', 'Source Sans Pro', Helvetica, Arial, sans-serif;
   font-weight: normal;
-  color: #666;
-  padding: 10px 15px;
-  border: 1px solid #ddd;
+  color: #0b3d91;
+  border: 1px solid #bfc3c6;
   border-radius: 4px;
   font-size: 16px;
   line-height: 1.4;
+  background-color: #fff;
   width: 100%;
+  padding: 10px 15px;
+}
+
+input[type="date"]:focus,
+button:focus {
+  outline: 2px solid #fc3d21;
+  border-color: #fc3d21;
 }
 
 /* Button specific */
 button {
-  background-color: #d3d3d3;
-  color: black;
+  background-color: #fc3d21; /* NASA red */
+  color: #fff;
   cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
 }
 button:hover {
-  background-color: #bfbfbf;
+  background-color: #b21e13;
 }
 
 /* Stack horizontally on wider screens */
@@ -80,11 +92,141 @@ button:hover {
     flex-direction: row;
     padding: 0;
   }
-  
   input[type="date"],
   button {
     width: auto;
   }
+}
+
+@media (max-width: 959px) {
+  .filters-dropdown {
+    width: 100%;
+    max-width: 430px !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .filters {
+    width: auto;
+    padding: 0; /* Remove side padding that causes overflow */
+  }
+  input[type="date"] {
+    width: auto;
+    padding: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  button {
+    width: auto;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 600px) {
+  .filters-dropdown {
+    width: 100%;
+    max-width: 360px !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .filters {
+    width: auto;
+    padding: 0; /* Remove side padding that causes overflow */
+  }
+  .gallery {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  input[type="date"],
+  button {
+    width: auto;
+    padding: 15px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 500px) {
+  .site-header {
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
+  .logo {
+    width: 200px;
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 2rem;
+    letter-spacing: 3px;
+  }
+}
+
+/* Filters dropdown wrapper */
+.filters-dropdown {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto 20px auto;
+}
+
+/* Toggle bar for filters */
+.filters-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  background: #0b3d91;
+  color: #fff;
+  font-family: 'Public Sans', 'Inter', 'Source Sans Pro', Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 10px 16px;
+  border-radius: 6px 6px 0 0;
+  user-select: none;
+  transition: background 0.2s;
+}
+
+.filters-toggle:hover {
+  background: #163d6b;
+}
+
+#filtersArrow {
+  display: inline-block;
+  margin-right: 8px;
+  font-size: 1.2em;
+  transition: transform 0.3s;
+}
+
+/* Filters panel with slide animation */
+#filtersPanel {
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(.4,2,.6,1), padding 0.3s;
+  max-height: 500px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 2px 8px rgba(11,61,145,0.10);
+}
+
+.filters-closed #filtersPanel {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.filters-closed #filtersArrow {
+  transform: rotate(-90deg);
+}
+
+/* Remove margin below filters-dropdown since it replaces .filters margin */
+.filters-dropdown {
+  margin-bottom: 0;
 }
 
 /* Gallery flex container */
@@ -100,14 +242,24 @@ button:hover {
 .gallery-item {
   flex: 1 1 100%;  /* full width by default */
   min-width: 280px;
-  max-width: 500px;
-  background: white;
+  max-width: 430px;
+  background: #fff;
+
   padding: 10px;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(11,61,145,0.10);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  font-family: 'Source Sans Pro', 'Inter', 'Public Sans', Helvetica, Arial, sans-serif;
+  transition: transform 0.2s cubic-bezier(.4,2,.6,1), box-shadow 0.2s;
+}
+
+/* Pop-out effect on hover */
+.gallery-item:hover {
+  transform: scale(1.04) translateY(-6px);
+  box-shadow: 0 8px 24px rgba(11,61,145,0.18), 0 2px 8px rgba(11,61,145,0.10);
+  z-index: 2;
 }
 
 /* Three columns on wider screens */
@@ -122,6 +274,13 @@ button:hover {
   height: 200px;
   object-fit: cover;
   border-radius: 4px;
+  background: #e5e5e5;
+}
+
+.gallery-item h3 {
+  color: #0b3d91; /* NASA blue */
+  margin-top: 10px;
+  font-family: 'Public Sans', 'Inter', 'Source Sans Pro', Helvetica, Arial, sans-serif;
 }
 
 .gallery-item p {
@@ -135,7 +294,7 @@ button:hover {
   flex: 1 1 100%;
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: #bfc3c6;
 }
 
 .placeholder-icon {
@@ -151,7 +310,7 @@ button:hover {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(43, 43, 43, 0.85); /* NASA blue with opacity */
   justify-content: center;
   align-items: center;
   z-index: 1000;
@@ -164,7 +323,7 @@ button:hover {
 
 /* Modal content */
 #modal-content {
-  background: white;
+  background: #fff;
   border-radius: 8px;
   max-width: 600px;
   width: 90vw;
@@ -174,6 +333,8 @@ button:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
+  color: #0b3d91;
+  font-family: 'Source Sans Pro', 'Inter', 'Public Sans', Helvetica, Arial, sans-serif;
 }
 
 /* Close button */
@@ -183,7 +344,7 @@ button:hover {
   right: 20px;
   font-size: 28px;
   font-weight: bold;
-  color: #333;
+  color: #fc3d21;
   cursor: pointer;
 }
 
@@ -192,16 +353,18 @@ button:hover {
   max-width: 100%;
   max-height: 350px;
   border-radius: 4px;
+  background: #e5e5e5;
 }
 
 /* Modal title */
 #modal-title {
   margin-top: 20px;
+  font-family: 'Public Sans', 'Inter', 'Source Sans Pro', Helvetica, Arial, sans-serif;
 }
 
 /* Modal date */
 #modal-date {
-  color: #666;
+  color: #0b3d91;
   margin: 8px 0;
 }
 
@@ -209,4 +372,5 @@ button:hover {
 #modal-explanation {
   margin-top: 10px;
   font-size: 15px;
+  color: #222;
 }

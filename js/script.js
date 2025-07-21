@@ -129,3 +129,15 @@ modal.addEventListener('click', function(event) {
     closeModal();
   }
 });
+
+// Dropdown toggle for filters
+const filtersDropdown = document.querySelector('.filters-dropdown');
+const filtersToggle = document.getElementById('filtersToggle');
+
+filtersToggle.addEventListener('click', () => {
+  // Toggle the closed class on the dropdown wrapper
+  filtersDropdown.classList.toggle('filters-closed');
+  // Update aria-expanded for accessibility
+  const expanded = filtersToggle.getAttribute('aria-expanded') === 'true';
+  filtersToggle.setAttribute('aria-expanded', !expanded);
+});
