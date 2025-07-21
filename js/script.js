@@ -18,6 +18,31 @@ const gallery = document.getElementById('gallery');
 const NASA_API_URL = 'https://api.nasa.gov/planetary/apod';
 const NASA_API_KEY = 'nfA0esEsh3mANku1FXGzKmUagUOff35UPoNgrdme';
 
+// Array of fun/interesting space facts
+const spaceFacts = [
+  "A day on Venus is longer than a year on Venus.",
+  "Neutron stars can spin at a rate of 600 rotations per second.",
+  "One million Earths could fit inside the Sun.",
+  "There are more trees on Earth than stars in the Milky Way.",
+  "The footprints on the Moon will be there for millions of years.",
+  "Jupiter has the shortest day of all the planets.",
+  "A spoonful of a neutron star weighs about a billion tons.",
+  "Saturn could float in water because it’s mostly made of gas.",
+  "Mars has the largest volcano in the solar system: Olympus Mons.",
+  "Space is completely silent—there’s no air to carry sound.",
+  "The hottest planet in our solar system is Venus.",
+  "A year on Mercury is just 88 Earth days.",
+  "There are more stars in the universe than grains of sand on Earth.",
+  "The International Space Station travels at 28,000 km/h.",
+  "A sunset on Mars appears blue to human eyes."
+];
+
+// Function to get a random space fact from the array
+function getRandomSpaceFact() {
+  const index = Math.floor(Math.random() * spaceFacts.length);
+  return spaceFacts[index];
+}
+
 // Function to fetch and display images
 getImagesButton.addEventListener('click', () => {
   // Get the selected start and end dates from the inputs
@@ -27,50 +52,73 @@ getImagesButton.addEventListener('click', () => {
   // Build the API URL with the selected dates
   const url = `${NASA_API_URL}?api_key=${NASA_API_KEY}&start_date=${startDate}&end_date=${endDate}`;
 
-  // Show loading message
-  gallery.innerHTML = '<p>Loading images...</p>';
+  // Show loading message with a random space fact
+  const fact = getRandomSpaceFact();
+  gallery.innerHTML = `
+    <div style="display: flex; flex-direction: column; align-items: center;">
+      <p style="font-weight:bold;">Loading images...</p>
+      <p style="margin-top:10px; color:#0b3d91;">${fact}</p>
+    </div>
+  `;
+
+  // Record the time when loading starts
+  const loadingStart = Date.now();
 
   // Fetch data from NASA APOD API
   fetch(url)
     .then(response => response.json())
     .then(data => {
-      // Clear the gallery
-      gallery.innerHTML = '';
+      // Calculate how much time has passed
+      const elapsed = Date.now() - loadingStart;
+      const minDelay = 1000; // 1 second minimum
 
-      // If the API returns a single object (not an array), wrap it in an array
-      const images = Array.isArray(data) ? data : [data];
+      // Function to render the gallery after the delay
+      const renderGallery = () => {
+        // Clear the gallery
+        gallery.innerHTML = '';
 
-      // Only keep the first 9 images
-      const firstNine = images.slice(0, 9);
+        // If the API returns a single object (not an array), wrap it in an array
+        const images = Array.isArray(data) ? data : [data];
 
-      // Loop through each image and create a gallery item
-      firstNine.forEach(item => {
-        // Only show images (not videos)
-        if (item.media_type === 'image') {
-          // Create a div for the gallery item
-          const div = document.createElement('div');
-          div.className = 'gallery-item';
+        // Only keep the first 9 images
+        const firstNine = images.slice(0, 9);
 
-          // Set the inner HTML with image, title, and date
-          div.innerHTML = `
-            <img src="${item.url}" alt="${item.title}" />
-            <h3>${item.title}</h3>
-            <p>${item.date}</p>
-          `;
+        // Loop through each image and create a gallery item
+        firstNine.forEach(item => {
+          // Only show images (not videos)
+          if (item.media_type === 'image') {
+            // Create a div for the gallery item
+            const div = document.createElement('div');
+            div.className = 'gallery-item';
 
-          // When the gallery item is clicked, open the modal
-          div.addEventListener('click', () => {
-            openModal(item);
-          });
+            // Set the inner HTML with image, title, and date
+            div.innerHTML = `
+              <img src="${item.url}" alt="${item.title}" />
+              <h3>${item.title}</h3>
+              <p>${item.date}</p>
+            `;
 
-          // Add the item to the gallery
-          gallery.appendChild(div);
+            // When the gallery item is clicked, open the modal
+            div.addEventListener('click', () => {
+              openModal(item);
+            });
+
+            // Add the item to the gallery
+            gallery.appendChild(div);
+          }
+        });
+
+        // If no images found, show a message
+        if (gallery.children.length === 0) {
+          gallery.innerHTML = '<p>No images found for this date range.</p>';
         }
-      });
+      };
 
-      // If no images found, show a message
-      if (gallery.children.length === 0) {
-        gallery.innerHTML = '<p>No images found for this date range.</p>';
+      // If less than 1 second has passed, wait the remaining time
+      if (elapsed < minDelay) {
+        setTimeout(renderGallery, minDelay - elapsed);
+      } else {
+        renderGallery();
       }
     })
     .catch(error => {
