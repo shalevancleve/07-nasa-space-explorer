@@ -279,11 +279,10 @@ button:hover {
 
 /* Gallery items */
 .gallery-item {
-  flex: 1 1 100%;  /* full width by default */
+  flex: 1 1 100%;
   min-width: 280px;
   max-width: 365px !important;
   background: #fff;
-
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(11,61,145,0.10);
@@ -292,6 +291,7 @@ button:hover {
   flex-direction: column;
   font-family: 'Source Sans Pro', 'Inter', 'Public Sans', Helvetica, Arial, sans-serif;
   transition: transform 0.2s cubic-bezier(.4,2,.6,1), box-shadow 0.2s;
+  position: relative; /* Needed for absolute positioning of date */
 }
 
 /* Pop-out effect on hover */
@@ -315,10 +315,27 @@ button:hover {
   font-family: 'Public Sans', 'Inter', 'Source Sans Pro', Helvetica, Arial, sans-serif;
 }
 
+/* Place the date at the bottom left of the card */
 .gallery-item p {
   margin-top: 10px;
   padding: 5px;
   font-size: 14px;
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  margin-bottom: 0;
+  background: rgba(255,255,255,0.85);
+  border-radius: 4px;
+  color: #0b3d91;
+  min-width: 80px;
+  text-align: left;
+  box-shadow: 0 1px 3px rgba(11,61,145,0.04);
+  z-index: 1;
+}
+
+/* Ensure enough space at the bottom of the card for the date */
+.gallery-item {
+  padding-bottom: 38px;
 }
 
 /* Placeholder content */
