@@ -43,6 +43,13 @@ function getRandomSpaceFact() {
   return spaceFacts[index];
 }
 
+// Helper function to extract YouTube video ID from various URL formats
+function getYouTubeVideoId(url) {
+  // This regex matches standard, short, and embed YouTube URLs
+  const match = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  return match ? match[1] : null;
+}
+
 // Function to fetch and display images
 getImagesButton.addEventListener('click', () => {
   // Get the selected start and end dates from the inputs
@@ -68,53 +75,64 @@ getImagesButton.addEventListener('click', () => {
   fetch(url)
     .then(response => response.json())
     .then(data => {
-      // Calculate how much time has passed
       const elapsed = Date.now() - loadingStart;
-      const minDelay = 1000; // 1 second minimum
+      const minDelay = 1000;
 
       // Function to render the gallery after the delay
       const renderGallery = () => {
-        // Clear the gallery
         gallery.innerHTML = '';
 
-        // If the API returns a single object (not an array), wrap it in an array
         const images = Array.isArray(data) ? data : [data];
-
-        // Only keep the first 9 images
         const firstNine = images.slice(0, 9);
 
-        // Loop through each image and create a gallery item
         firstNine.forEach(item => {
-          // Only show images (not videos)
-          if (item.media_type === 'image') {
-            // Create a div for the gallery item
-            const div = document.createElement('div');
-            div.className = 'gallery-item';
+          const div = document.createElement('div');
+          div.className = 'gallery-item';
 
-            // Set the inner HTML with image, title, and date
+          if (item.media_type === 'image') {
             div.innerHTML = `
               <img src="${item.url}" alt="${item.title}" />
               <h3>${item.title}</h3>
               <p>${item.date}</p>
             `;
-
-            // When the gallery item is clicked, open the modal
             div.addEventListener('click', () => {
               openModal(item);
             });
-
-            // Add the item to the gallery
-            gallery.appendChild(div);
+          } else if (item.media_type === 'video') {
+            // Use the helper to get the video ID from any YouTube URL format
+            const videoId = getYouTubeVideoId(item.url);
+            let videoEmbed = '';
+            if (videoId) {
+              videoEmbed = `
+                <div class="video-wrapper">
+                  <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                </div>
+              `;
+            } else {
+              videoEmbed = `
+                <a href="${item.url}" target="_blank" rel="noopener" class="video-link">
+                  Watch Video
+                </a>
+              `;
+            }
+            div.innerHTML = `
+              ${videoEmbed}
+              <h3>${item.title}</h3>
+              <p>${item.date}</p>
+            `;
+            div.addEventListener('click', () => {
+              openModal(item);
+            });
           }
+
+          gallery.appendChild(div);
         });
 
-        // If no images found, show a message
         if (gallery.children.length === 0) {
           gallery.innerHTML = '<p>No images found for this date range.</p>';
         }
       };
 
-      // If less than 1 second has passed, wait the remaining time
       if (elapsed < minDelay) {
         setTimeout(renderGallery, minDelay - elapsed);
       } else {
@@ -122,7 +140,6 @@ getImagesButton.addEventListener('click', () => {
       }
     })
     .catch(error => {
-      // Show error message if something goes wrong
       gallery.innerHTML = `<p>Error loading images. Please try again later.</p>`;
       // For debugging: console.log(error);
     });
@@ -152,15 +169,62 @@ const modalTitle = document.getElementById('modal-title');
 const modalDate = document.getElementById('modal-date');
 const modalExplanation = document.getElementById('modal-explanation');
 
-// Function to open the modal with image info
+// Function to open the modal with image or video info
 function openModal(item) {
-  // Use the HD image if available, otherwise use the normal image
-  modalImg.src = item.hdurl || item.url;
-  modalImg.alt = item.title;
+  // If it's an image
+  if (item.media_type === 'image') {
+    modalImg.style.display = '';
+    modalImg.src = item.hdurl || item.url;
+    modalImg.alt = item.title;
+    modalImg.style.maxHeight = '';
+    // Remove any previous video iframes
+    removeModalVideo();
+  }
+  // If it's a video
+  else if (item.media_type === 'video') {
+    modalImg.style.display = 'none';
+    removeModalVideo();
+    let videoElem;
+    const videoId = getYouTubeVideoId(item.url);
+    if (videoId) {
+      videoElem = document.createElement('iframe');
+      videoElem.src = `https://www.youtube.com/embed/${videoId}`;
+      videoElem.frameBorder = "0";
+      videoElem.allowFullscreen = true;
+      videoElem.style.width = "100%";
+      videoElem.style.maxWidth = "560px";
+      videoElem.style.height = "315px";
+      videoElem.style.borderRadius = "4px";
+      videoElem.style.background = "#e5e5e5";
+    }
+    if (!videoElem) {
+      videoElem = document.createElement('a');
+      videoElem.href = item.url;
+      videoElem.target = "_blank";
+      videoElem.rel = "noopener";
+      videoElem.textContent = "Watch Video";
+      videoElem.style.display = "block";
+      videoElem.style.margin = "20px 0";
+      videoElem.style.color = "#0b3d91";
+      videoElem.style.fontWeight = "bold";
+      videoElem.style.textDecoration = "underline";
+    }
+    modalImg.parentNode.insertBefore(videoElem, modalImg.nextSibling);
+    videoElem.className = "modal-video";
+  }
+
   modalTitle.textContent = item.title;
   modalDate.textContent = item.date;
   modalExplanation.textContent = item.explanation;
   modal.style.display = 'flex';
+}
+
+// Helper to remove any video iframe or link from modal
+function removeModalVideo() {
+  const prevVideo = modal.querySelector('.modal-video');
+  if (prevVideo) {
+    prevVideo.remove();
+  }
 }
 
 // Function to close the modal

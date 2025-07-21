@@ -28,6 +28,14 @@ body {
   justify-content: center;
   padding-top: 20px;
   padding-bottom: 20px;
+}
+
+.sub-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0px;
+  padding-bottom: 20px;
   margin-bottom: 20px;
 }
 
@@ -36,6 +44,12 @@ h1 {
   font-weight: bold;
   color: #0b3d91; /* NASA blue */
   letter-spacing: 2px;
+  text-align: center;
+}
+
+h2 {
+  font-family: 'Public Sans', 'Inter', 'Source Sans Pro', Helvetica, Arial, sans-serif;
+  text-align: center;
 }
 
 /* Logo */
@@ -167,6 +181,31 @@ button:hover {
     font-size: 2rem;
     letter-spacing: 3px;
   }
+  h2 {
+    font-size: 1.5rem;
+  }
+  #modal-content {
+    padding: 10px;
+    max-width: 98vw;
+    max-height: 95vh;
+  }
+  #modal-img {
+    max-height: 30vh;
+  }
+  #modal-title {
+    font-size: 1.1rem;
+  }
+  #modal-explanation {
+    font-size: 13px;
+  }
+
+}
+
+/* Three columns on wider screens */
+@media (min-width: 1000px) {
+  .gallery-item {
+    flex: 0 1 31%;
+  }
 }
 
 /* Filters dropdown wrapper */
@@ -260,13 +299,6 @@ button:hover {
   transform: scale(1.04) translateY(-6px);
   box-shadow: 0 8px 24px rgba(11,61,145,0.18), 0 2px 8px rgba(11,61,145,0.10);
   z-index: 2;
-}
-
-/* Three columns on wider screens */
-@media (min-width: 1000px) {
-  .gallery-item {
-    flex: 0 1 31%;
-  }
 }
 
 .gallery-item img {
@@ -380,20 +412,24 @@ button:hover {
   color: #222;
 }
 
-/* On very small screens, reduce modal padding and font size */
-@media (max-width: 500px) {
-  #modal-content {
-    padding: 10px;
-    max-width: 98vw;
-    max-height: 95vh;
-  }
-  #modal-img {
-    max-height: 30vh;
-  }
-  #modal-title {
-    font-size: 1.1rem;
-  }
-  #modal-explanation {
-    font-size: 13px;
-  }
+/* Video wrapper for responsive videos */
+.video-wrapper {
+  width: 100%;
+  aspect-ratio: 16/9;
+  margin-bottom: 10px;
+}
+.video-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  background: #e5e5e5;
+  display: block;
+}
+.video-link {
+  display: inline-block;
+  margin: 16px 0 10px 0;
+  color: #0b3d91;
+  font-weight: bold;
+  text-decoration: underline;
+  font-size: 1.1em;
 }
