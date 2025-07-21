@@ -335,6 +335,10 @@ button:hover {
   align-items: center;
   color: #0b3d91;
   font-family: 'Source Sans Pro', 'Inter', 'Public Sans', Helvetica, Arial, sans-serif;
+  /* Add max-height and enable scrolling for overflow content */
+  max-height: 90vh;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 /* Close button */
@@ -348,12 +352,13 @@ button:hover {
   cursor: pointer;
 }
 
-/* Modal image */
+/* Make modal image responsive inside modal */
 #modal-img {
   max-width: 100%;
-  max-height: 350px;
+  max-height: 40vh;
   border-radius: 4px;
   background: #e5e5e5;
+  object-fit: contain;
 }
 
 /* Modal title */
@@ -373,4 +378,22 @@ button:hover {
   margin-top: 10px;
   font-size: 15px;
   color: #222;
+}
+
+/* On very small screens, reduce modal padding and font size */
+@media (max-width: 500px) {
+  #modal-content {
+    padding: 10px;
+    max-width: 98vw;
+    max-height: 95vh;
+  }
+  #modal-img {
+    max-height: 30vh;
+  }
+  #modal-title {
+    font-size: 1.1rem;
+  }
+  #modal-explanation {
+    font-size: 13px;
+  }
 }
