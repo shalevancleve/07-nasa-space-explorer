@@ -189,3 +189,26 @@ filtersToggle.addEventListener('click', () => {
   const expanded = filtersToggle.getAttribute('aria-expanded') === 'true';
   filtersToggle.setAttribute('aria-expanded', !expanded);
 });
+
+// When the user changes the start date, automatically set the end date to 8 days later
+startInput.addEventListener('change', () => {
+  // Get the selected start date as a Date object
+  const startDateValue = startInput.value;
+  if (!startDateValue) return; // Do nothing if no date is selected
+
+  const startDateObj = new Date(startDateValue);
+
+  // Create a new date 8 days after the start date
+  const endDateObj = new Date(startDateObj);
+  endDateObj.setDate(startDateObj.getDate() + 9);
+
+  // Format the new end date as YYYY-MM-DD
+  const yyyy = endDateObj.getFullYear();
+  const mm = String(endDateObj.getMonth() + 1).padStart(2, '0');
+  const dd = String(endDateObj.getDate()).padStart(2, '0');
+  const formattedEndDate = `${yyyy}-${mm}-${dd}`;
+
+  // Set the end date input value, but do not exceed today's date
+  const today = new Date().toISOString().split('T')[0];
+  endInput.value = (formattedEndDate > today) ? today : formattedEndDate;
+});
